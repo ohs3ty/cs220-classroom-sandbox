@@ -1,13 +1,3 @@
-// const Pet = {
-//     image: "",
-//     name: "",
-//     age: 0,
-//     breed: "",
-//     description: "",
-//     isAdopted: false,
-//     favorite: false,
-// }
-
 const petContainer = document.getElementById("pet-container");
 
 function createPet(image, name, age, breed, description, isAdopted, favorite) {
@@ -22,29 +12,55 @@ function createPet(image, name, age, breed, description, isAdopted, favorite) {
     };
 }
 
-let mochiPet = createPet("./images/mochi.png", "Mia", 2, "orange tabby", "Mochi is a playful and energetic Shiba Inu who loves to run and play fetch.", false, true);  
-console.log(mochiPet);
+const mochiPet = createPet(
+    "./images/mochi.png",
+    "Mochi",
+    2,
+    "Orange Tabby",
+    "Mochi is a playful and energetic cat who loves chasing toys and taking naps in sunny windows.",
+    false,
+    false
+);
 
 function toggleAdoption(pet) {
     pet.isAdopted = !pet.isAdopted;
 }
 
-function createPetCard(pet) {
+function renderPetCard(pet) {
     petContainer.innerHTML = `
         <div class="pet-card">
             <img src="${pet.image}" alt="Image of ${pet.name}" />
-            <h2>${pet.name}</h2>
-            <p>${pet.name} is a ${pet.age}-year-old ${pet.breed}. ${pet.description}</p>
+
+            <div class="pet-content">
+                <h2>${pet.favorite ? "⭐ " : ""}${pet.name}</h2>
+
+                <p>
+                    ${pet.name} is a ${pet.age}-year-old ${pet.breed}.
+                </p>
+
+                <p>
+                    ${pet.description}
+                </p>
+
+                <p class="${pet.isAdopted ? "adopted" : "available"}">
+                    ${pet.isAdopted ? "Adopted" : "Available for Adoption"}
+                </p>
+
+                <div class="button-group">
+                    <button class="${pet.isAdopted ? "return-btn" : "adopt-btn"}">
+                        ${pet.isAdopted ? "Return Pet" : "Adopt Me"}
+                    </button>
+                </div>
+            </div>
         </div>
-        <p>
-            ${pet.isAdopted ? "Adopted." : "Available for adoption."}
-        </p>
+    `;
 
-        <button>
-            ${pet.isAdopted ? "Return Pet" : "Adopt Me!"}
-        </button>
-    `
+    const adoptButton = petContainer.querySelector("button");
+
+    adoptButton.addEventListener("click", function () {
+        toggleAdoption(pet);
+        renderPetCard(pet);
+    });
 }
-console.log(mochiPet.image);
-createPetCard(mochiPet);
 
+renderPetCard(mochiPet);

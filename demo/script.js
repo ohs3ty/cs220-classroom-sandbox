@@ -1,73 +1,83 @@
-const pet = {
-    name: "Mochi",
-    species: "cat",
-    age: 3,
-    adopted: false,
-    favorite: false,
-    image: "images/mochi.png"
-};
+const pets = [
+    new Pet(
+        1,
+        "Mochi",
+        "cat",
+        3,
+        "images/mochi.png"
+    ),
+    new Pet(
+        2,
+        "Biscuit",
+        "dog",
+        5,
+        "images/biscuit.jpg"
+    ),
+    new Pet(
+        3,
+        "Noodle",
+        "rabbit",
+        2,
+        "images/noodle.jpg",
+        true
+    )
+];
 
 const petContainer = document.getElementById("pet-container");
 
-function createPetCard(pet) {
+function renderApp() {
     petContainer.innerHTML = "";
 
+    pets.forEach(function (pet) {
+        const petCard = createPetCard(pet);
+        petContainer.appendChild(petCard);
+    });
+}
+
+function renderPetCard(pet) {
     const petCard = document.createElement("div");
     petCard.classList.add("pet-card");
 
-    const petImage = document.createElement("img");
-    petImage.src = pet.image;
-    petImage.alt = `${pet.name} the ${pet.species}`;
+    petCard.innerHTML = `
+        <img src="${pet.image}" alt="${pet.name} the ${pet.species}">
 
-    const petContent = document.createElement("div");
-    petContent.classList.add("pet-content");
+        <div class="pet-content">
+            <h2>${pet.favorite ? "⭐ " : ""}${pet.name}</h2>
 
-    const petName = document.createElement("h2");
-    petName.textContent = pet.favorite ? `⭐ ${pet.name}` : pet.name;
+            <p>
+                ${pet.name} is a ${pet.age}-year-old ${pet.species}.
+            </p>
 
-    const petInfo = document.createElement("p");
-    petInfo.textContent = `${pet.name} is a ${pet.age}-year-old ${pet.species}.`;
+            <p class="${pet.adopted ? "adopted" : "available"}">
+                ${pet.adopted ? "Adopted" : "Available for Adoption"}
+            </p>
 
-    const petStatus = document.createElement("p");
-    petStatus.textContent = pet.adopted
-        ? "Adopted"
-        : "Available for Adoption";
+            <div class="button-group">
+                <button class="${pet.adopted ? "return-btn" : "adopt-btn"}">
+                    ${pet.adopted ? "Return Pet" : "Adopt Me"}
+                </button>
 
-    petStatus.classList.add(pet.adopted ? "adopted" : "available");
+                <button class="favorite-btn">
+                    ${pet.favorite ? "★ Favorited" : "☆ Favorite"}
+                </button>
+            </div>
+        </div>
+    `;
 
-    const buttonGroup = document.createElement("div");
-    buttonGroup.classList.add("button-group");
-
-    const adoptButton = document.createElement("button");
-    adoptButton.textContent = pet.adopted ? "Return Pet" : "Adopt Me";
-    adoptButton.classList.add(pet.adopted ? "return-btn" : "adopt-btn");
+    const adoptButton = petCard.querySelector(".adopt-btn, .return-btn");
+    const favoriteButton = petCard.querySelector(".favorite-btn");
 
     adoptButton.addEventListener("click", function () {
-        pet.adopted = !pet.adopted;
-        createPetCard(pet);
+        pet.toggleAdopted();
+        renderApp();
     });
-
-    const favoriteButton = document.createElement("button");
-    favoriteButton.textContent = pet.favorite ? "★ Favorited" : "☆ Favorite";
-    favoriteButton.classList.add("favorite-btn");
 
     favoriteButton.addEventListener("click", function () {
-        pet.favorite = !pet.favorite;
-        createPetCard(pet);
+        pet.toggleFavorite();
+        renderApp();
     });
 
-    buttonGroup.appendChild(adoptButton);
-    buttonGroup.appendChild(favoriteButton);
-
-    petContent.appendChild(petName);
-    petContent.appendChild(petInfo);
-    petContent.appendChild(petStatus);
-    petContent.appendChild(buttonGroup);
-
-    petCard.appendChild(petImage);
-    petCard.appendChild(petContent);
-
-    petContainer.appendChild(petCard);
+    return petCard;
 }
 
-createPetCard(pet);
+renderApp();
